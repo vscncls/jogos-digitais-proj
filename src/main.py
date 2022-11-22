@@ -12,7 +12,7 @@ tick_rate = 60
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 
-level = Level(screen)
+level = Level(screen, 0)
 
 while True:
     for event in pygame.event.get():

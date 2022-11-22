@@ -1,21 +1,23 @@
 import pygame
+from src.deathException import DeathException
 from src.helper import get_layout
 from src.player import Player
 
 from src.tile import AnimatedTile, Tile, StaticTile, Coin
 from src.enemy import Enemy
-from src.settings import tile_size, screen_width
+from src.settings import tile_size, screen_width, screen_height
 from src.helper import get_tile_set
 
 
 class Level:
-    def __init__(self, surface: pygame.surface.Surface):
+    def __init__(self, surface: pygame.surface.Surface, curr_level: int):
         self.display_surface = surface
         self.goal = pygame.sprite.GroupSingle()
         self.player = pygame.sprite.GroupSingle()
         self.setup_level()
         self.setup_player()
         self.world_shift = 0
+        self.collected_coins = 0
 
     def setup_level(self):
         terreno_layout = get_layout("./src/assets/mapa/terreno.csv")
@@ -133,13 +135,45 @@ class Level:
             self.world_shift = 8
             player.speed = 0
         elif player_x > screen_width - (screen_width / 4) and direction_x > 0:
-            self.world_shift = -8
+            self.world_shift = -player.default_speed
             player.speed = 0
         else:
             self.world_shift = 0
-            player.speed = 8
+            player.speed = player.default_speed
+
+    def check_enemy_collision(self):
+        player: Player = self.player.sprite  # type: ignore
+        collisions = pygame.sprite.spritecollide(player, self.inimigo_sprites, False)
+        for inimigo in collisions:
+            if inimigo.rect is None:
+                raise Exception("inimigo.rect is none")
+
+            if player.direction.y > player.gravity:
+                inimigo.kill()
+                player.jump()
+                player.jump()
+            else:
+                player.damage()
+
+    def check_coin_collision(self):
+        player: Player = self.player.sprite  # type: ignore
+        collisions = pygame.sprite.spritecollide(player, self.moeda_sprites, False)
+        for moeda in collisions:
+            if moeda.rect is None:
+                raise Exception("inimigo.rect is none")
+
+            moeda.kill()
+            self.collected_coins += 1
+
+    def out_of_bounds_check(self):
+        player: Player = self.player.sprite  # type: ignore
+        if player.rect.topleft[1] > screen_height:
+            raise DeathException()
 
     def run(self):
+        # colocar imagem de ceu
+        self.display_surface.fill('cyan')
+
         self.terreno_sprites.update(self.world_shift)
         self.terreno_sprites.draw(self.display_surface)
 
@@ -150,7 +184,6 @@ class Level:
         self.inimigo_bloqueio_sprites.update(self.world_shift)
         self.enemy_collision_w_block()
         self.inimigo_sprites.draw(self.display_surface)
-        self.inimigo_bloqueio_sprites.draw(self.display_surface)
 
         self.player.update()
         self.horizontal_movement_collision()
@@ -161,3 +194,7 @@ class Level:
 
         self.goal.draw(self.display_surface)
         self.goal.update(self.world_shift)
+
+        self.out_of_bounds_check()
+        self.check_enemy_collision()
+        self.check_coin_collision()

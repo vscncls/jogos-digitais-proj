@@ -1,0 +1,2 @@
+class EndOfLevelException(Exception):
+    pass

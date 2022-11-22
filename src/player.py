@@ -1,20 +1,27 @@
 import pygame
+from src.deathException import DeathException
 from src.helper import import_folder
-import datetime
+
+from datetime import datetime
+
 
 class Player(pygame.sprite.Sprite):
     rect: pygame.rect.Rect
     direction: pygame.math.Vector2
 
-    default_speed = 5
-    gravity = .65
+    default_speed = 3
+    gravity = 0.65
     jump_speed = 12
     animation_speed = 0.1
 
-    _animations:  list[pygame.surface.Surface]
+    invincibility_duration_ms = 800
+
+    max_health = 3
+
+    _animations: list[pygame.surface.Surface]
 
     def __import_assets(self):
-        self._animations = import_folder(f'src/assets/player/run')
+        self._animations = import_folder(f"src/assets/player/run")
 
     def __init__(self, pos: tuple[int, int]):
         super().__init__()
@@ -22,7 +29,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = self.default_speed
         self.animation_frame = 0
 
-        self.status = 'idle'
+        self.status = "idle"
         self.facing_right = True
         self.on_left = False
         self.on_right = False
@@ -34,6 +41,21 @@ class Player(pygame.sprite.Sprite):
         self.image = self._animations[self.animation_frame]
 
         self.rect = self.image.get_rect(topleft=pos)
+
+        self.health = self.max_health
+        self.last_damage_time = datetime.now()
+        self.invincible = True
+
+    def damage(self):
+        if self.invincible:
+            return
+
+        self.health -= 1
+        if self.health == 0:
+            raise DeathException()
+
+        self.last_damage_time = datetime.now()
+        self.invincible = True
 
     def animate(self):
         self.animation_frame += self.animation_speed
@@ -53,16 +75,23 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
 
         if keys[pygame.K_SPACE]:
-            self.jump()
+            if self.on_ground:
+                self.jump()
 
     def apply_gravity(self):
         self.direction.y += self.gravity
         self.rect.y += int(self.direction.y)
 
     def jump(self):
-        if self.on_ground:
-            self.direction.y -= self.jump_speed
+        self.direction.y -= self.jump_speed
 
     def update(self):
         self.get_input()
         self.animate()
+
+        if (
+            self.invincible
+            and ((datetime.now() - self.last_damage_time).microseconds / 1000)
+            > self.invincibility_duration_ms
+        ):
+            self.invincible = False

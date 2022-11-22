@@ -1,0 +1,2 @@
+class DeathException(Exception):
+    pass
