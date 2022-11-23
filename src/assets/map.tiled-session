@@ -1,9 +1,46 @@
 {
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
     "activeFile": "",
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "0x72_DungeonTilesetII_v1.4-8x8.tsx": {
+            "dynamicWrapping": false
+        },
+        "0x72_DungeonTilesetII_v1.4.tsx": {
+            "dynamicWrapping": false
+        },
+        "inimigo.tsx": {
+            "dynamicWrapping": true
+        },
+        "mapa.tmx": {
+            "scale": 1.381,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 3255.973931933381,
+                "y": 349.38450398262125
+            }
+        },
+        "mapa1.tmx": {
+            "scale": 1.727,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 2131.7313259988423,
+                "y": 225.53561088592932
+            }
+        }
     },
+    "last.exportedFilePath": "/home/lucas/Documents/jogos_digitais/proj-final/src/assets/mapa/0",
+    "last.imagePath": "/home/lucas/Documents/jogos_digitais/proj-final/src/assets/princesa",
+    "map.height": 44,
+    "map.lastUsedExportFilter": "CSV files (*.csv)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 240,
     "openFiles": [
     ],
     "project": "map.tiled-project",

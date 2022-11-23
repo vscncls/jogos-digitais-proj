@@ -1,9 +1,9 @@
 import pygame
 import sys
 from src.background import Background
+from src.game import Game
 
 from src.settings import screen_width, screen_height
-from level import Level
 
 pygame.init()
 
@@ -12,7 +12,7 @@ tick_rate = 60
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 
-level = Level(screen, 0)
+game = Game(screen)
 
 while True:
     for event in pygame.event.get():
@@ -25,7 +25,7 @@ while True:
     background = pygame.sprite.GroupSingle(Background())
     background.draw(screen)
 
-    level.run()
+    game.run()
 
     pygame.display.update()
     clock.tick(tick_rate)

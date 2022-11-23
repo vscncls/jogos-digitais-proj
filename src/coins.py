@@ -7,3 +7,6 @@ class CoinsCount:
 
     def amount(self):
         return self.count
+
+    def zero(self):
+        self.count = 0
