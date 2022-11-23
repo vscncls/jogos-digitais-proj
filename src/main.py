@@ -1,11 +1,11 @@
 import pygame
 import sys
+from src.background import Background
 
 from src.settings import screen_width, screen_height
 from level import Level
 
 pygame.init()
-
 
 tick_rate = 60
 
@@ -21,6 +21,9 @@ while True:
             sys.exit()
 
     screen.fill('black')
+
+    background = pygame.sprite.GroupSingle(Background())
+    background.draw(screen)
 
     level.run()
 

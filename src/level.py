@@ -1,5 +1,7 @@
 import pygame
+from src.coins import CoinsCount
 from src.deathException import DeathException
+from src.gui import GUI
 from src.helper import get_layout
 from src.player import Player
 
@@ -16,8 +18,11 @@ class Level:
         self.player = pygame.sprite.GroupSingle()
         self.setup_level()
         self.setup_player()
+        self.setup_gui()
         self.world_shift = 0
-        self.collected_coins = 0
+        self.collected_coins = CoinsCount()
+        player: Player = self.player.sprite  # type: ignore
+        self.gui = GUI(self.display_surface, self.collected_coins, player)
 
     def setup_level(self):
         terreno_layout = get_layout("./src/assets/mapa/terreno.csv")
@@ -47,6 +52,10 @@ class Level:
                 elif cell == '2':
                     princess_sprite = AnimatedTile((x, y), tile_size, './src/assets/princesa')
                     self.goal.add(princess_sprite)
+
+    def setup_gui(self):
+        player: Player = self.player.sprite  # type: ignore
+        self.health_text = str(player.health)
 
     def create_tile_group(self, layout: list[list[str]], name: str):
         group = pygame.sprite.Group()
@@ -163,7 +172,7 @@ class Level:
                 raise Exception("inimigo.rect is none")
 
             moeda.kill()
-            self.collected_coins += 1
+            self.collected_coins.add()
 
     def out_of_bounds_check(self):
         player: Player = self.player.sprite  # type: ignore
@@ -171,9 +180,6 @@ class Level:
             raise DeathException()
 
     def run(self):
-        # colocar imagem de ceu
-        self.display_surface.fill('cyan')
-
         self.terreno_sprites.update(self.world_shift)
         self.terreno_sprites.draw(self.display_surface)
 
@@ -198,3 +204,5 @@ class Level:
         self.out_of_bounds_check()
         self.check_enemy_collision()
         self.check_coin_collision()
+
+        self.gui.render()
