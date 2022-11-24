@@ -62,7 +62,7 @@ class Game:
             self.current_runner.event(self.events)
             self.current_runner.run()
         except MenuStartGameException:
-            self.create_level(2)
+            self.create_level(0)
         except LevelOverException:
             try:
                 self.create_level(self.level.curr_level + 1)
