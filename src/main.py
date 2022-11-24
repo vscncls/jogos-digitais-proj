@@ -15,7 +15,8 @@ clock = pygame.time.Clock()
 game = Game(screen)
 
 while True:
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
@@ -25,6 +26,7 @@ while True:
     background = pygame.sprite.GroupSingle(Background())
     background.draw(screen)
 
+    game.event(events)
     game.run()
 
     pygame.display.update()

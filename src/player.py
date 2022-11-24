@@ -64,7 +64,7 @@ class Player(pygame.sprite.Sprite):
         current_frame = self._animations[int(self.animation_frame)]
         self.image = current_frame
 
-    def get_input(self):
+    def input(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_d]:
@@ -86,7 +86,7 @@ class Player(pygame.sprite.Sprite):
         self.direction.y -= self.jump_speed
 
     def update(self):
-        self.get_input()
+        self.input()
         self.animate()
 
         if (

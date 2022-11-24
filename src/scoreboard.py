@@ -6,6 +6,7 @@ class Score:
     def __init__(self, coins: int, time: datetime) -> None:
         self.coins = coins
         self.time = time
+        self.name = "Unknown"
 
 
 class Scoreboard:
@@ -28,6 +29,9 @@ class Scoreboard:
 
     def add_score(self, score: Score):
         self.scorebaord.append(score)
+
+    def scores(self):
+        return self.scorebaord
 
     # not ideal butttttt
     def persist(self):

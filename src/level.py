@@ -5,6 +5,7 @@ from src.deathException import DeathException
 from src.gui import GUI
 from src.helper import get_layout
 from src.player import Player
+from src.returnToMenuException import ReturnToMenuException
 
 from src.tile import AnimatedTile, Tile, StaticTile, Coin
 from src.enemy import Enemy
@@ -205,7 +206,18 @@ class Level:
         if collisions:
             raise LevelOverException()
 
+    def event(self, events: list[pygame.event.Event]):
+        self.events = events
+
+    def check_input(self):
+        for event in self.events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    raise ReturnToMenuException()
+
     def run(self):
+        self.check_input()
+
         self.terreno_sprites.update(self.world_shift)
         self.terreno_sprites.draw(self.display_surface)
 
@@ -217,7 +229,8 @@ class Level:
         self.enemy_collision_w_block()
         self.inimigo_sprites.draw(self.display_surface)
 
-        self.player.update()
+        player: Player = self.player.sprite  # type: ignore
+        player.update()
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.scroll_x()
