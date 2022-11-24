@@ -16,24 +16,35 @@
         "inimigo.tsx": {
             "dynamicWrapping": true
         },
+        "jogador.tsx": {
+            "dynamicWrapping": true
+        },
         "mapa.tmx": {
-            "scale": 1.381,
-            "selectedLayer": 0,
+            "scale": 0.3759,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 3255.973931933381,
-                "y": 349.38450398262125
+                "x": 2571.162543229582,
+                "y": 403.03272146847553
             }
         },
         "mapa1.tmx": {
-            "scale": 1.727,
-            "selectedLayer": 3,
+            "scale": 0.9968,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 2131.7313259988423,
-                "y": 225.53561088592932
+                "x": 2309.8916532905296,
+                "y": 333.5674157303371
+            }
+        },
+        "mapa3.tmx": {
+            "scale": 1.1943,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 3542.242317675626,
+                "y": 239.0521644477937
             }
         }
     },
-    "last.exportedFilePath": "/home/lucas/Documents/jogos_digitais/proj-final/src/assets/mapa/0",
+    "last.exportedFilePath": "/home/lucas/Documents/jogos_digitais/proj-final/src/assets/mapa/1",
     "last.imagePath": "/home/lucas/Documents/jogos_digitais/proj-final/src/assets/princesa",
     "map.height": 44,
     "map.lastUsedExportFilter": "CSV files (*.csv)",

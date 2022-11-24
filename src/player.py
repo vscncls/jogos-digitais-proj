@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
     rect: pygame.rect.Rect
     direction: pygame.math.Vector2
 
-    default_speed = 10
+    default_speed = 3
     gravity = 0.65
     jump_speed = 12
     animation_speed = 0.1
