@@ -1,5 +1,5 @@
 import pygame
-from src.coins import CoinsCount
+from src.coins import Counter
 from src.deathException import DeathException
 from src.gameOver import GameOver
 
@@ -19,7 +19,7 @@ class Game:
         self.screen = screen
         self.scoreboard = Scoreboard()
 
-        self.coins = CoinsCount()
+        self.coins = Counter()
 
         self.sound_controller = SoundController()
 

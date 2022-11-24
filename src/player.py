@@ -1,7 +1,6 @@
 import pygame
 from src.deathException import DeathException
 from src.helper import import_folder
-from copy import deepcopy
 
 from datetime import datetime
 
@@ -23,17 +22,8 @@ class Player(pygame.sprite.Sprite):
     _idle_animations: list[pygame.surface.Surface]
 
     def __import_assets(self):
-        self._idle_regular_animations = import_folder(f"src/assets/player/idle")
-        self._idle_invincible_animations = import_folder(f"src/assets/player/idle")
-        for i in self._idle_invincible_animations:
-            i.set_alpha(100)
-        self._idle_animations = self._idle_regular_animations
-
-        self._running_regular_animations = import_folder(f"src/assets/player/run")
-        self._running_invincible_animations = import_folder(f"src/assets/player/run")
-        for i in self._running_invincible_animations:
-            i.set_alpha(100)
-        self._running_animations = self._running_regular_animations
+        self._idle_animations = import_folder(f"src/assets/player/idle")
+        self._running_animations = import_folder(f"src/assets/player/run")
 
     def __init__(self, pos: tuple[int, int]):
         super().__init__()
@@ -61,11 +51,9 @@ class Player(pygame.sprite.Sprite):
     def become_invincible(self):
         self.last_damage_time = datetime.now()
         self.invincible = True
-        self._running_animations = self._running_invincible_animations
 
     def remove_invincibility(self):
         self.invincible = False
-        self._running_animations = self._running_regular_animations
 
     def damage(self):
         if self.invincible:
@@ -83,6 +71,12 @@ class Player(pygame.sprite.Sprite):
         if self.animation_frame >= len(animations):
             self.animation_frame = 0
         current_frame = animations[int(self.animation_frame)]
+        if self.invincible:
+            # copy to not dirty animation buffer
+            current_frame = current_frame.copy()
+            current_frame.set_alpha(100 if self.invincible else 0)
+        if not self.facing_right:
+            current_frame = pygame.transform.flip(current_frame, True, False)
         self.image = current_frame
 
     def input(self):
@@ -90,9 +84,11 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_d]:
             self.status = 'running'
+            self.facing_right = True
             self.direction.x = 1
         elif keys[pygame.K_a]:
             self.status = 'running'
+            self.facing_right = False
             self.direction.x = -1
         else:
             self.status = 'idle'

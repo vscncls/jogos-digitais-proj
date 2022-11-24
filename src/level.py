@@ -1,6 +1,6 @@
 import os
 import pygame
-from src.coins import CoinsCount
+from src.coins import Counter
 from src.deathException import DeathException
 from src.gui import GUI
 from src.helper import get_layout
@@ -23,7 +23,7 @@ class LevelOverException(Exception):
 
 
 class Level:
-    def __init__(self, surface: pygame.surface.Surface, curr_level: int, coins: CoinsCount, sound_controller: SoundController):
+    def __init__(self, surface: pygame.surface.Surface, curr_level: int, coins: Counter, sound_controller: SoundController):
         self.curr_level = curr_level
         self.base_path = f"./src/assets/mapa/{self.curr_level}"
         self.check_level_exists()

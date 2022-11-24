@@ -1,10 +1,10 @@
 import pygame
-from src.coins import CoinsCount
+from src.coins import Counter
 
 from src.player import Player
 
 class GUI:
-    def __init__(self, screen: pygame.surface.Surface, coins: CoinsCount, player: Player) -> None:
+    def __init__(self, screen: pygame.surface.Surface, coins: Counter, player: Player) -> None:
         self.screen = screen
 
         self.coins = coins

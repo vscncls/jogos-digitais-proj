@@ -1,4 +1,4 @@
-class CoinsCount:
+class Counter:
     def __init__(self) -> None:
         self.count = 0
 
