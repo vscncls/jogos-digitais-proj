@@ -32,7 +32,7 @@ class ScoreboardScreen:
 
             self.screen.blit(text, text.get_rect(center=(screen_width / 2, y)))
 
-            y += 80
+            y += 60
 
     def input(self):
         for event in self.events:

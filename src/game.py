@@ -12,6 +12,7 @@ from src.returnToMenuException import ReturnToMenuException
 from src.scoreboard import Score, Scoreboard
 from src.scoreboardScreen import ScoreboardScreen
 from src.soundController import SoundController
+from src.typeNameScreen import FormCompletedException, TypeNameScreen
 
 
 class Game:
@@ -28,9 +29,9 @@ class Game:
 
         self.sound_controller.play_music()
 
-    def save_score(self):
+    def save_score(self, name: str):
         now = datetime.now()
-        self.scoreboard.add_score(Score(self.coins.amount(), self.enemies_killed.amount(), now))
+        self.scoreboard.add_score(Score(name, self.coins.amount(), self.enemies_killed.amount(), now))
         self.scoreboard.persist()
         self.coins.zero()
         self.enemies_killed.zero()
@@ -46,6 +47,9 @@ class Game:
     def create_scoreboard(self):
         self.scoreboard_screen = ScoreboardScreen(self.screen, self.scoreboard)
         self.current_runner = self.scoreboard_screen
+
+    def create_name_form(self):
+        self.current_runner = TypeNameScreen(self.screen)
 
     def create_game_over(self):
         self.current_runner = GameOver(self.screen)
@@ -63,11 +67,13 @@ class Game:
             try:
                 self.create_level(self.level.curr_level + 1)
             except LevelDoesntExistException:
-                self.save_score()
-                self.create_menu()
+                self.create_name_form()
         except (LevelDoesntExistException, ReturnToMenuException):
             self.create_menu()
         except MenuScoreboardException:
             self.create_scoreboard()
         except DeathException:
             self.create_game_over()
+        except FormCompletedException as form:
+            self.save_score(form.name)
+            self.create_menu()

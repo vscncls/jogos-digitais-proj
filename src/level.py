@@ -43,6 +43,8 @@ class Level:
 
         self.enemy_death_audio = pygame.mixer.Sound('./src/assets/poof.ogg')
 
+        self.damage_audio = pygame.mixer.Sound('./src/assets/damage.ogg')
+
         self.enemies_killed = enemies_killed
 
     def check_level_exists(self):
@@ -194,7 +196,9 @@ class Level:
                 self.sound_controller.play(self.enemy_death_audio)
                 self.enemies_killed.add()
             else:
-                player.damage()
+                took_damage = player.damage()
+                if took_damage:
+                    self.sound_controller.play(self.damage_audio)
 
     def check_coin_collision(self):
         player: Player = self.player.sprite  # type: ignore

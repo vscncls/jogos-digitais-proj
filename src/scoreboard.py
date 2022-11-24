@@ -3,11 +3,11 @@ import json
 
 
 class Score:
-    def __init__(self, coins: int, enemies_killed: int, time: datetime) -> None:
+    def __init__(self, name: str, coins: int, enemies_killed: int, time: datetime) -> None:
+        self.name = name
         self.coins = coins
         self.enemies_killed = enemies_killed
         self.time = time
-        self.name = "Unknown"
 
 
 class Scoreboard:
@@ -24,6 +24,7 @@ class Scoreboard:
                 for score in scoreboard_raw:
                     self.scorebaord.append(
                         Score(
+                            score["name"],
                             score["coins"],
                             score["enemies_killed"],
                             datetime.fromisoformat(score["time"]),
@@ -45,6 +46,7 @@ class Scoreboard:
             for score in self.scorebaord:
                 raw_data.append(
                     {
+                        "name": score.name,
                         "coins": score.coins,
                         "enemies_killed": score.enemies_killed,
                         "time": score.time.isoformat(),

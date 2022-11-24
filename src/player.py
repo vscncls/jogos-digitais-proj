@@ -57,13 +57,15 @@ class Player(pygame.sprite.Sprite):
 
     def damage(self):
         if self.invincible:
-            return
+            return False
 
         self.health -= 1
         if self.health == 0:
             raise DeathException()
 
         self.become_invincible()
+
+        return True
 
     def animate(self):
         self.animation_frame += self.animation_speed
