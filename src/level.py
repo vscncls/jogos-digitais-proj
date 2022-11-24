@@ -1,6 +1,6 @@
 import os
 import pygame
-from src.coins import Counter
+from src.counter import Counter
 from src.deathException import DeathException
 from src.gui import GUI
 from src.helper import get_layout
@@ -23,7 +23,7 @@ class LevelOverException(Exception):
 
 
 class Level:
-    def __init__(self, surface: pygame.surface.Surface, curr_level: int, coins: Counter, sound_controller: SoundController):
+    def __init__(self, surface: pygame.surface.Surface, curr_level: int, coins: Counter, enemies_killed: Counter, sound_controller: SoundController):
         self.curr_level = curr_level
         self.base_path = f"./src/assets/mapa/{self.curr_level}"
         self.check_level_exists()
@@ -42,6 +42,8 @@ class Level:
         self.coin_audio.set_volume(0.1)
 
         self.enemy_death_audio = pygame.mixer.Sound('./src/assets/poof.ogg')
+
+        self.enemies_killed = enemies_killed
 
     def check_level_exists(self):
         if not os.path.exists(f"{self.base_path}"):
@@ -190,6 +192,7 @@ class Level:
                 player.jump()
                 player.jump()
                 self.sound_controller.play(self.enemy_death_audio)
+                self.enemies_killed.add()
             else:
                 player.damage()
 

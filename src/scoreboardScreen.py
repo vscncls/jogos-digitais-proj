@@ -25,7 +25,7 @@ class ScoreboardScreen:
         y = 100
         for idx, score in enumerate(self.scoreboard.scores()):
             text = self.font.render(
-                    f"{idx} - Nome: {score.name} = Moedas: {score.coins} = Horario: {score.time.strftime('%m/%d/%Y - %H:%M:%S')}",
+                    f"{idx} - Nome: {score.name} = Moedas: {score.coins} = Inimigos: {score.enemies_killed} = Horario: {score.time.strftime('%m/%d/%Y - %H:%M:%S')}",
                 True,
                 (0, 0, 0),
             )

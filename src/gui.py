@@ -1,5 +1,5 @@
 import pygame
-from src.coins import Counter
+from src.counter import Counter
 
 from src.player import Player
 

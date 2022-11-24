@@ -1,5 +1,5 @@
 import pygame
-from src.coins import Counter
+from src.counter import Counter
 from src.deathException import DeathException
 from src.gameOver import GameOver
 
@@ -20,6 +20,7 @@ class Game:
         self.scoreboard = Scoreboard()
 
         self.coins = Counter()
+        self.enemies_killed = Counter()
 
         self.sound_controller = SoundController()
 
@@ -29,12 +30,13 @@ class Game:
 
     def save_score(self):
         now = datetime.now()
-        self.scoreboard.add_score(Score(self.coins.amount(), now))
+        self.scoreboard.add_score(Score(self.coins.amount(), self.enemies_killed.amount(), now))
         self.scoreboard.persist()
         self.coins.zero()
+        self.enemies_killed.zero()
 
     def create_level(self, level: int):
-        self.level = Level(self.screen, level, self.coins, self.sound_controller)
+        self.level = Level(self.screen, level, self.coins, self.enemies_killed, self.sound_controller)
         self.current_runner = self.level
 
     def create_menu(self):

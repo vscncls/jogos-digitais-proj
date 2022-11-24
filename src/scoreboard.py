@@ -3,8 +3,9 @@ import json
 
 
 class Score:
-    def __init__(self, coins: int, time: datetime) -> None:
+    def __init__(self, coins: int, enemies_killed: int, time: datetime) -> None:
         self.coins = coins
+        self.enemies_killed = enemies_killed
         self.time = time
         self.name = "Unknown"
 
@@ -22,7 +23,11 @@ class Scoreboard:
                 scoreboard_raw = json.loads(scorebaord_file.read())
                 for score in scoreboard_raw:
                     self.scorebaord.append(
-                        Score(score["coins"], datetime.fromisoformat(score["time"]))
+                        Score(
+                            score["coins"],
+                            score["enemies_killed"],
+                            datetime.fromisoformat(score["time"]),
+                        )
                     )
         except FileNotFoundError:
             pass
@@ -31,7 +36,7 @@ class Scoreboard:
         self.scorebaord.append(score)
 
     def scores(self):
-        return self.scorebaord
+        return reversed(sorted(self.scorebaord, key = lambda val: val.enemies_killed + (val.coins * 2)))
 
     # not ideal butttttt
     def persist(self):
@@ -41,6 +46,7 @@ class Scoreboard:
                 raw_data.append(
                     {
                         "coins": score.coins,
+                        "enemies_killed": score.enemies_killed,
                         "time": score.time.isoformat(),
                     }
                 )
