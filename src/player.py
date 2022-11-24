@@ -11,7 +11,7 @@ class Player(pygame.sprite.Sprite):
 
     default_speed = 3
     gravity = 0.65
-    jump_speed = 12
+    jump_speed = 13
     animation_speed = 0.1
 
     invincibility_duration_ms = 800
