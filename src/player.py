@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
 
     invincibility_duration_ms = 800
 
-    max_health = 100
+    max_health = 5
 
     _running_animations: list[pygame.surface.Surface]
     _idle_animations: list[pygame.surface.Surface]
