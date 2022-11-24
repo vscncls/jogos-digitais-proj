@@ -1,6 +1,7 @@
 import pygame
 from src.deathException import DeathException
 from src.helper import import_folder
+from copy import deepcopy
 
 from datetime import datetime
 
@@ -18,10 +19,21 @@ class Player(pygame.sprite.Sprite):
 
     max_health = 100
 
-    _animations: list[pygame.surface.Surface]
+    _running_animations: list[pygame.surface.Surface]
+    _idle_animations: list[pygame.surface.Surface]
 
     def __import_assets(self):
-        self._animations = import_folder(f"src/assets/player/run")
+        self._idle_regular_animations = import_folder(f"src/assets/player/idle")
+        self._idle_invincible_animations = import_folder(f"src/assets/player/idle")
+        for i in self._idle_invincible_animations:
+            i.set_alpha(100)
+        self._idle_animations = self._idle_regular_animations
+
+        self._running_regular_animations = import_folder(f"src/assets/player/run")
+        self._running_invincible_animations = import_folder(f"src/assets/player/run")
+        for i in self._running_invincible_animations:
+            i.set_alpha(100)
+        self._running_animations = self._running_regular_animations
 
     def __init__(self, pos: tuple[int, int]):
         super().__init__()
@@ -38,13 +50,22 @@ class Player(pygame.sprite.Sprite):
 
         self.__import_assets()
 
-        self.image = self._animations[self.animation_frame]
+        self.image = self._running_animations[self.animation_frame]
 
         self.rect = self.image.get_rect(topleft=pos)
 
         self.health = self.max_health
         self.last_damage_time = datetime.now()
+        self.become_invincible()
+
+    def become_invincible(self):
+        self.last_damage_time = datetime.now()
         self.invincible = True
+        self._running_animations = self._running_invincible_animations
+
+    def remove_invincibility(self):
+        self.invincible = False
+        self._running_animations = self._running_regular_animations
 
     def damage(self):
         if self.invincible:
@@ -54,24 +75,27 @@ class Player(pygame.sprite.Sprite):
         if self.health == 0:
             raise DeathException()
 
-        self.last_damage_time = datetime.now()
-        self.invincible = True
+        self.become_invincible()
 
     def animate(self):
         self.animation_frame += self.animation_speed
-        if self.animation_frame >= len(self._animations):
+        animations = self._idle_animations if self.status == 'idle' else self._running_animations
+        if self.animation_frame >= len(animations):
             self.animation_frame = 0
-        current_frame = self._animations[int(self.animation_frame)]
+        current_frame = animations[int(self.animation_frame)]
         self.image = current_frame
 
     def input(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_d]:
+            self.status = 'running'
             self.direction.x = 1
         elif keys[pygame.K_a]:
+            self.status = 'running'
             self.direction.x = -1
         else:
+            self.status = 'idle'
             self.direction.x = 0
 
         if keys[pygame.K_SPACE]:
@@ -94,4 +118,4 @@ class Player(pygame.sprite.Sprite):
             and ((datetime.now() - self.last_damage_time).microseconds / 1000)
             > self.invincibility_duration_ms
         ):
-            self.invincible = False
+            self.remove_invincibility()

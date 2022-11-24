@@ -6,6 +6,7 @@ from src.gui import GUI
 from src.helper import get_layout
 from src.player import Player
 from src.returnToMenuException import ReturnToMenuException
+from src.soundController import SoundController
 
 from src.tile import AnimatedTile, Tile, StaticTile, Coin
 from src.enemy import Enemy
@@ -22,11 +23,12 @@ class LevelOverException(Exception):
 
 
 class Level:
-    def __init__(self, surface: pygame.surface.Surface, curr_level: int, coins: CoinsCount):
+    def __init__(self, surface: pygame.surface.Surface, curr_level: int, coins: CoinsCount, sound_controller: SoundController):
         self.curr_level = curr_level
         self.base_path = f"./src/assets/mapa/{self.curr_level}"
         self.check_level_exists()
         self.display_surface = surface
+        self.sound_controller = sound_controller
         self.goal = pygame.sprite.GroupSingle()
         self.player = pygame.sprite.GroupSingle()
         self.setup_level()
@@ -35,6 +37,11 @@ class Level:
         self.collected_coins = coins
         player: Player = self.player.sprite  # type: ignore
         self.gui = GUI(self.display_surface, self.collected_coins, player)
+
+        self.coin_audio = pygame.mixer.Sound('./src/assets/coin.mp3')
+        self.coin_audio.set_volume(0.1)
+
+        self.enemy_death_audio = pygame.mixer.Sound('./src/assets/poof.ogg')
 
     def check_level_exists(self):
         if not os.path.exists(f"{self.base_path}"):
@@ -182,6 +189,7 @@ class Level:
                 inimigo.kill()
                 player.jump()
                 player.jump()
+                self.sound_controller.play(self.enemy_death_audio)
             else:
                 player.damage()
 
@@ -194,6 +202,7 @@ class Level:
 
             moeda.kill()
             self.collected_coins.add()
+            self.sound_controller.play(self.coin_audio)
 
     def out_of_bounds_check(self):
         player: Player = self.player.sprite  # type: ignore

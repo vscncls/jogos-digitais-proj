@@ -1,6 +1,7 @@
 import pygame
 from src.coins import CoinsCount
 from src.deathException import DeathException
+from src.gameOver import GameOver
 
 from src.level import Level, LevelDoesntExistException, LevelOverException
 from src.menu import Menu, MenuScoreboardException, MenuStartGameException
@@ -24,6 +25,8 @@ class Game:
 
         self.create_menu()
 
+        self.sound_controller.play_music()
+
     def save_score(self):
         now = datetime.now()
         self.scoreboard.add_score(Score(self.coins.amount(), now))
@@ -31,7 +34,7 @@ class Game:
         self.coins.zero()
 
     def create_level(self, level: int):
-        self.level = Level(self.screen, level, self.coins)
+        self.level = Level(self.screen, level, self.coins, self.sound_controller)
         self.current_runner = self.level
 
     def create_menu(self):
@@ -41,6 +44,9 @@ class Game:
     def create_scoreboard(self):
         self.scoreboard_screen = ScoreboardScreen(self.screen, self.scoreboard)
         self.current_runner = self.scoreboard_screen
+
+    def create_game_over(self):
+        self.current_runner = GameOver(self.screen)
 
     def event(self, events: list[pygame.event.Event]):
         self.events = events
@@ -57,7 +63,9 @@ class Game:
             except LevelDoesntExistException:
                 self.save_score()
                 self.create_menu()
-        except (LevelDoesntExistException, DeathException, ReturnToMenuException):
+        except (LevelDoesntExistException, ReturnToMenuException):
             self.create_menu()
         except MenuScoreboardException:
             self.create_scoreboard()
+        except DeathException:
+            self.create_game_over()
